@@ -22,9 +22,9 @@
 
         .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(246,244,241,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); transition: all 0.3s ease; }
         .nav.scrolled { background: rgba(246,244,241,0.97); box-shadow: 0 1px 20px rgba(26,60,52,0.06); }
-        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 96px; }
         .nav-logo { display: flex; align-items: center; text-decoration: none; }
-        .nav-logo img { height: 36px; width: auto; }
+        .nav-logo img { height: 80px; width: auto; }
         .nav-links { display: flex; gap: 2.5rem; list-style: none; }
         .nav-links a { text-decoration: none; color: var(--text-secondary); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.03em; transition: color 0.25s ease; position: relative; }
         .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--sage); transition: width 0.3s ease; }
@@ -79,7 +79,7 @@
         .solution-sticky {
             position: sticky; top: 0; height: 100vh; overflow: hidden;
             display: flex; flex-direction: column; justify-content: center;
-            padding: 80px 2rem 2rem;
+            padding: 104px 2rem 2rem;
         }
         .solution-header { text-align: center; margin-bottom: 1rem; flex-shrink: 0; }
         .solution-header .section-label { color: var(--sage-muted); }
@@ -92,19 +92,7 @@
         .tetris-wrap { flex-shrink: 0; width: 320px; max-height: 90%; }
         .tetris-wrap svg { width: 100%; height: auto; display: block; }
 
-        .tpiece { opacity: 0; }
-        .tpiece.landed { animation: tdrop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-        .tpiece.lifting { animation: tlift 0.4s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
-        @keyframes tdrop {
-            0% { opacity: 1; transform: translateY(-350px); }
-            62% { transform: translateY(4px); }
-            80% { transform: translateY(-2px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes tlift {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-350px); }
-        }
+        .tpiece { opacity: 0; transform: translateY(-300px); will-change: transform, opacity; }
 
         /* Piece colours — cool spectrum */
         .tp1 rect { fill: #8a9bae; stroke: #7a8b9e; stroke-width: 1.5; }
@@ -112,15 +100,14 @@
         .tp3 rect { fill: #3a8a8a; stroke: #2a7a7a; stroke-width: 1.5; }
         .tp4 rect { fill: #1a4a3a; stroke: #0f3a2e; stroke-width: 1.5; }
         .tp5 rect { fill: #e8c840; stroke: #d4b530; stroke-width: 1.5; }
-        .tp5.landed { filter: drop-shadow(0 0 10px rgba(232,200,64,0.4)); }
+        .tp5.glow { filter: drop-shadow(0 0 10px rgba(232,200,64,0.4)); }
 
         .steps-list { flex: 1; min-width: 0; }
         .step-item {
             opacity: 0; transform: translateX(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            will-change: transform, opacity;
             margin-bottom: 1.1rem; display: flex; gap: 12px; align-items: flex-start;
         }
-        .step-item.visible { opacity: 1; transform: translateX(0); }
         .step-badge {
             flex-shrink: 0; width: 30px; height: 30px; border-radius: 7px;
             display: flex; align-items: center; justify-content: center;
@@ -192,7 +179,7 @@
             .solution-content { flex-direction: column; gap: 1rem; }
             .tetris-wrap { width: 220px; margin: 0 auto; }
             .solution-header .section-heading { font-size: 1.5rem; }
-            .solution-sticky { padding: 72px 1.5rem 1rem; }
+            .solution-sticky { padding: 104px 1.5rem 1rem; }
             .step-item h3 { font-size: 0.85rem; }
             .step-item p { font-size: 0.72rem; line-height: 1.4; }
             .step-item { margin-bottom: 0.35rem; }
@@ -202,7 +189,7 @@
             .about-accent { height: 220px; }
             .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
             .form-row { grid-template-columns: 1fr; }
-            .nav-links { display: none; position: absolute; top: 72px; left: 0; right: 0; background: rgba(246,244,241,0.98); backdrop-filter: blur(20px); flex-direction: column; padding: 1.5rem 2rem 2rem; gap: 1.25rem; border-bottom: 1px solid var(--border); }
+            .nav-links { display: none; position: absolute; top: 96px; left: 0; right: 0; background: rgba(246,244,241,0.98); backdrop-filter: blur(20px); flex-direction: column; padding: 1.5rem 2rem 2rem; gap: 1.25rem; border-bottom: 1px solid var(--border); }
             .nav-links.open { display: flex; }
             .nav-toggle { display: block; }
             .section { padding: 5rem 1.5rem; }
@@ -437,89 +424,61 @@
                 groups.push(g);
             });
 
-            let currentStep = -1; // -1 = nothing dropped, 0-4 = pieces landed up to index
             const steps = document.querySelectorAll('.step-item');
+            const DROP_HEIGHT = 300; // px above resting position
 
-            function dropPiece(idx) {
-                if (groups[idx]) {
-                    groups[idx].classList.remove('lifting');
-                    groups[idx].classList.add('landed');
-                }
-                steps.forEach(s => {
-                    if (parseInt(s.dataset.step) === idx + 1) {
-                        setTimeout(() => s.classList.add('visible'), 300);
-                    }
-                });
-            }
-
-            function liftPiece(idx) {
-                if (groups[idx]) {
-                    groups[idx].classList.remove('landed');
-                    groups[idx].classList.add('lifting');
-                }
-                steps.forEach(s => {
-                    if (parseInt(s.dataset.step) === idx + 1) {
-                        s.classList.remove('visible');
-                    }
-                });
-            }
+            // Easing: smooth deceleration
+            function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
             function onScroll() {
                 const rect = section.getBoundingClientRect();
                 const scrolled = -rect.top;
                 const range = section.offsetHeight - window.innerHeight;
-                if (scrolled < 0 || range <= 0) return;
+                if (range <= 0) return;
 
-                const progress = Math.min(scrolled / range, 1);
-                // target: -1 (none) through 4 (all 5 pieces)
-                const target = Math.min(Math.floor(progress * 5), 4);
+                const progress = Math.max(0, Math.min(scrolled / range, 1));
 
                 if (progress > 0.02 && hint) hint.classList.add('hidden');
                 if (progress <= 0.01 && hint) hint.classList.remove('hidden');
 
-                // Dropping: need to land pieces up to target
-                if (target > currentStep) {
-                    for (let i = currentStep + 1; i <= target; i++) {
-                        dropPiece(i);
-                    }
-                    currentStep = target;
-                }
-                // Lifting: need to remove pieces above target
-                else if (target < currentStep) {
-                    for (let i = currentStep; i > target; i--) {
-                        liftPiece(i);
-                    }
-                    currentStep = target;
-                }
+                // Each piece occupies a band of the scroll range
+                // With overlap so pieces start dropping before the previous fully lands
+                const PIECE_COUNT = 5;
+                const bandSize = 1 / PIECE_COUNT;
+                const leadIn = bandSize * 0.15; // start slightly early
 
-                // Handle the edge case: scrolled back to very top
-                if (progress < 0.01 && currentStep >= 0) {
-                    for (let i = currentStep; i >= 0; i--) {
-                        liftPiece(i);
+                for (let i = 0; i < PIECE_COUNT; i++) {
+                    const start = i * bandSize - (i > 0 ? leadIn : 0);
+                    const end = (i + 1) * bandSize;
+                    // Piece progress: 0 = fully raised, 1 = fully landed
+                    const pieceP = Math.max(0, Math.min((progress - start) / (end - start), 1));
+                    const eased = easeOutCubic(pieceP);
+
+                    // Transform: slide from -DROP_HEIGHT to 0
+                    const y = DROP_HEIGHT * (1 - eased);
+                    groups[i].style.transform = 'translateY(-' + y.toFixed(1) + 'px)';
+                    groups[i].style.opacity = pieceP < 0.01 ? '0' : Math.min(eased * 2, 1).toFixed(3);
+
+                    // Glow on final piece when fully landed
+                    if (i === 4 && eased > 0.95) {
+                        groups[i].classList.add('glow');
+                    } else if (i === 4) {
+                        groups[i].classList.remove('glow');
                     }
-                    currentStep = -1;
+
+                    // Step text follows its piece with a slight lag
+                    const stepEl = steps[i];
+                    if (stepEl) {
+                        const textP = Math.max(0, Math.min((pieceP - 0.3) / 0.7, 1));
+                        const textEased = easeOutCubic(textP);
+                        stepEl.style.opacity = textEased.toFixed(3);
+                        stepEl.style.transform = 'translateX(' + (20 * (1 - textEased)).toFixed(1) + 'px)';
+                    }
                 }
             }
 
             window.addEventListener('scroll', onScroll, { passive: true });
             onScroll();
-
-            // Auto-play fallback for embedded viewers
-            let autoPlayed = false;
-            const visCheck = new IntersectionObserver(entries => {
-                if (entries[0].isIntersecting && !autoPlayed && currentStep === -1) {
-                    setTimeout(() => {
-                        if (currentStep === -1) {
-                            autoPlayed = true;
-                            for (let i = 0; i < 5; i++) {
-                                setTimeout(() => { dropPiece(i); currentStep = i; }, i * 800);
-                            }
-                            if (hint) hint.classList.add('hidden');
-                        }
-                    }, 1200);
-                }
-            }, { threshold: 0.1 });
-            visCheck.observe(section);
         })();
 
         /* NODE NETWORKS */
@@ -535,7 +494,7 @@
         const fadeObs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
         document.querySelectorAll('.fade-in').forEach(el=>fadeObs.observe(el));
         document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('name').value;const email=document.getElementById('email').value;const company=document.getElementById('company').value;const message=document.getElementById('message').value;const subject=encodeURIComponent('Website Enquiry from '+name+(company?' ('+company+')':''));const body=encodeURIComponent('Name: '+name+'\nEmail: '+email+(company?'\nCompany: '+company:'')+'\n\n'+message);window.location.href='mailto:jonathan.kapoor@bluespruce.co.nz?subject='+subject+'&body='+body;});
-        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});});});
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-104,behavior:'smooth'});});});
     </script>
 </body>
 </html>
