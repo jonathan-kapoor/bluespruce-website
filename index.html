@@ -22,9 +22,9 @@
 
         .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(246,244,241,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); transition: all 0.3s ease; }
         .nav.scrolled { background: rgba(246,244,241,0.97); box-shadow: 0 1px 20px rgba(26,60,52,0.06); }
-        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 96px; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 120px; }
         .nav-logo { display: flex; align-items: center; text-decoration: none; }
-        .nav-logo img { height: 80px; width: auto; }
+        .nav-logo img { height: 100px; width: auto; }
         .nav-links { display: flex; gap: 2.5rem; list-style: none; }
         .nav-links a { text-decoration: none; color: var(--text-secondary); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.03em; transition: color 0.25s ease; position: relative; }
         .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--sage); transition: width 0.3s ease; }
@@ -77,7 +77,7 @@
         .solution-sticky {
             position: sticky; top: 0; height: 100vh; overflow: hidden;
             display: flex; flex-direction: column; justify-content: center;
-            padding: 104px 2rem 2rem;
+            padding: 128px 2rem 2rem;
         }
         .solution-header { text-align: center; margin-bottom: 1rem; flex-shrink: 0; }
         .solution-header .section-label { color: var(--sage-muted); }
@@ -159,7 +159,7 @@
 
         .footer { background: var(--forest-deep); padding: 3rem 2rem; text-align: center; }
         .footer p { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.4); }
-        .footer-logo { height: 28px; margin-bottom: 1rem; opacity: 0.5; filter: brightness(10); }
+        .footer-logo { height: 64px; margin-bottom: 1.5rem; opacity: 0.5; filter: brightness(10); }
 
         .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -177,7 +177,7 @@
             .solution-content { flex-direction: column; gap: 1rem; }
             .tetris-wrap { width: 220px; margin: 0 auto; }
             .solution-header .section-heading { font-size: 1.5rem; }
-            .solution-sticky { padding: 104px 1.5rem 1rem; }
+            .solution-sticky { padding: 128px 1.5rem 1rem; }
             .step-item h3 { font-size: 0.85rem; }
             .step-item p { font-size: 0.72rem; line-height: 1.4; }
             .step-item { margin-bottom: 0.35rem; }
@@ -187,7 +187,7 @@
             .about-accent { height: 220px; }
             .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
             .form-row { grid-template-columns: 1fr; }
-            .nav-links { display: none; position: absolute; top: 96px; left: 0; right: 0; background: rgba(246,244,241,0.98); backdrop-filter: blur(20px); flex-direction: column; padding: 1.5rem 2rem 2rem; gap: 1.25rem; border-bottom: 1px solid var(--border); }
+            .nav-links { display: none; position: absolute; top: 120px; left: 0; right: 0; background: rgba(246,244,241,0.98); backdrop-filter: blur(20px); flex-direction: column; padding: 1.5rem 2rem 2rem; gap: 1.25rem; border-bottom: 1px solid var(--border); }
             .nav-links.open { display: flex; }
             .nav-toggle { display: block; }
             .section { padding: 5rem 1.5rem; }
@@ -492,7 +492,7 @@
         const fadeObs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible');});},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
         document.querySelectorAll('.fade-in').forEach(el=>fadeObs.observe(el));
         document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('name').value;const email=document.getElementById('email').value;const company=document.getElementById('company').value;const message=document.getElementById('message').value;const subject=encodeURIComponent('Website Enquiry from '+name+(company?' ('+company+')':''));const body=encodeURIComponent('Name: '+name+'\nEmail: '+email+(company?'\nCompany: '+company:'')+'\n\n'+message);window.location.href='mailto:jonathan.kapoor@bluespruce.co.nz?subject='+subject+'&body='+body;});
-        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-104,behavior:'smooth'});});});
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-128,behavior:'smooth'});});});
     </script>
 </body>
 </html>
